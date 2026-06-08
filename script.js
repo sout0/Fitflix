@@ -197,9 +197,8 @@ const App = {
     });
   },
 
-  // ---- SELECIONAR USUÁRIO (com transição cinematográfica) ----
+  // ---- SELECIONAR USUÁRIO (transição por fade) ----
   selectUser(user, cardEl) {
-    // Evitar duplo clique durante animação
     if (this._transitioning) return;
     this._transitioning = true;
 
@@ -211,142 +210,21 @@ const App = {
     // Pré-renderiza o dashboard (invisível ainda)
     this.renderDashboard();
 
-    // === FASE 1: Animar os outros cards para sumir ===
-    const allCards = document.querySelectorAll('.profile-card');
-    allCards.forEach(c => {
-      if (c !== cardEl) {
-        c.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-        c.style.opacity = '0';
-        c.style.transform = 'scale(0.85)';
-      }
-    });
-    // Logo e título recuam
-    const loginLogo  = document.getElementById('login-logo');
-    const loginTitle = document.getElementById('login-title');
-    loginLogo.style.transition  = 'opacity 0.3s ease, transform 0.3s ease';
-    loginTitle.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-    loginLogo.style.opacity  = '0';
-    loginLogo.style.transform  = 'translateY(-12px)';
-    loginTitle.style.opacity = '0';
-    loginTitle.style.transform = 'translateY(-8px)';
+    const loginScreen = document.getElementById('screen-login');
+    const dashScreen  = document.getElementById('screen-dashboard');
 
-    // === FASE 2: Avatar selecionado pulsa e escala levemente ===
-    const ring = cardEl.querySelector('[data-ring]');
-    ring.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease';
-    ring.style.borderColor = color;
-    ring.style.boxShadow   = `0 0 0 3px ${color}55, 0 0 30px ${color}44`;
-    ring.style.transform   = 'scale(1.08)';
+    // Fade-out da tela de login
+    loginScreen.classList.add('fading-out');
 
-    // === FASE 3: Lançar o "zoom avatar" voador ===
     setTimeout(() => {
-      this._launchZoomAvatar(cardEl, user, color, () => {
-        // === FASE 4: Mostrar dashboard com fade-in ===
-        const loginScreen = document.getElementById('screen-login');
-        const dashScreen  = document.getElementById('screen-dashboard');
+      loginScreen.classList.remove('active', 'fading-out');
+      dashScreen.classList.add('active', 'entering');
 
-        loginScreen.classList.remove('active');
-        dashScreen.classList.add('active', 'entering');
-
-        dashScreen.addEventListener('animationend', () => {
-          dashScreen.classList.remove('entering');
-          this._transitioning = false;
-        }, { once: true });
-
-        window.scrollTo(0, 0);
-      });
-    }, 220);
-  },
-
-  /**
-   * Clona o avatar, posiciona-o no lugar exato do card na tela,
-   * e anima até cobrir a viewport inteira.
-   */
-  _launchZoomAvatar(cardEl, user, color, onComplete) {
-    const ring    = cardEl.querySelector('[data-ring]');
-    const inner   = ring.querySelector('.profile-avatar-inner');
-    const zoomEl  = document.getElementById('zoom-avatar');
-
-    // Mede posição real do avatar na tela
-    const rect = ring.getBoundingClientRect();
-
-    // Configura o clone: mesmo tamanho, mesma posição, mesmo conteúdo
-    zoomEl.style.cssText = `
-      position: fixed;
-      left: ${rect.left}px;
-      top: ${rect.top}px;
-      width: ${rect.width}px;
-      height: ${rect.height}px;
-      background: ${inner.style.background};
-      font-size: ${rect.width * 0.38}px;
-      border-radius: var(--radius-md);
-      z-index: 999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      transform-origin: center center;
-      will-change: transform, border-radius, opacity;
-    `;
-    zoomEl.textContent = user.emoji;
-
-    // Esconde o card original durante a animação
-    ring.style.opacity = '0';
-
-    // Calcula escala necessária para preencher a tela
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const targetW = Math.max(vw, vh) * 2.5;
-    const scaleX  = targetW / rect.width;
-
-    // Centro do avatar vs centro da tela
-    const fromCX = rect.left + rect.width / 2;
-    const fromCY = rect.top  + rect.height / 2;
-    const toCX   = vw / 2;
-    const toCY   = vh / 2;
-    const tx     = toCX - fromCX;
-    const ty     = toCY - fromCY;
-
-    // Força reflow para garantir posição inicial renderizada
-    void zoomEl.offsetWidth;
-
-    // Animação via Web Animations API (mais precisa que CSS puro)
-    const anim = zoomEl.animate([
-      {
-        transform: 'translate(0, 0) scale(1)',
-        borderRadius: 'var(--radius-md)',
-        opacity: 1,
-        boxShadow: `0 0 40px ${color}66`,
-      },
-      {
-        transform: `translate(${tx * 0.3}px, ${ty * 0.3}px) scale(${scaleX * 0.3})`,
-        borderRadius: '20px',
-        opacity: 1,
-        offset: 0.35,
-      },
-      {
-        transform: `translate(${tx}px, ${ty}px) scale(${scaleX})`,
-        borderRadius: '0px',
-        opacity: 1,
-        offset: 0.75,
-        boxShadow: `0 0 120px ${color}88`,
-      },
-      {
-        transform: `translate(${tx}px, ${ty}px) scale(${scaleX})`,
-        borderRadius: '0px',
-        opacity: 0,
-        offset: 1,
-        boxShadow: 'none',
-      },
-    ], {
-      duration: 650,
-      easing: 'cubic-bezier(0.5, 0, 0.2, 1)',
-      fill: 'forwards',
-    });
-
-    anim.onfinish = () => {
-      zoomEl.style.opacity = '0';
-      onComplete();
-    };
+      dashScreen.addEventListener('animationend', () => {
+        dashScreen.classList.remove('entering');
+        this._transitioning = false;
+      }, { once: true });
+    }, 350);
   },
 
   /** Aplica cor de destaque via CSS variable */
