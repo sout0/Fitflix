@@ -64,8 +64,88 @@ body {
 }
 
 /* =============================================
-   TELA LOGIN — Seleção de Perfil
+   TRANSIÇÃO ZOOM — Animação cinematográfica
    ============================================= */
+
+/* Quando a tela de login está saindo */
+#screen-login.zooming .login-logo,
+#screen-login.zooming .login-title,
+#screen-login.zooming .profiles-grid {
+  animation: loginFadeOut 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes loginFadeOut {
+  0%   { opacity: 1; transform: scale(1); filter: blur(0px); }
+  100% { opacity: 0; transform: scale(0.88); filter: blur(6px); }
+}
+
+/* Avatar voador — clone que faz o zoom */
+.zoom-avatar {
+  position: fixed;
+  z-index: 999;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+  pointer-events: none;
+  opacity: 0;
+  transform-origin: center center;
+  will-change: transform, opacity, border-radius;
+  overflow: hidden;
+  box-shadow: 0 0 0 0 transparent;
+}
+
+/* Estado: pronto para animar */
+.zoom-avatar.animating {
+  opacity: 1;
+  animation: zoomToFull 0.65s cubic-bezier(0.6, 0, 0.2, 1) forwards;
+}
+
+@keyframes zoomToFull {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    border-radius: var(--radius-md);
+    box-shadow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1);
+    border-radius: var(--radius-md);
+  }
+  85% {
+    opacity: 1;
+    border-radius: 0px;
+    box-shadow: 0 0 80px var(--accent-glow);
+  }
+  100% {
+    opacity: 0;
+    border-radius: 0px;
+    box-shadow: none;
+  }
+}
+
+/* Flash de entrada no dashboard */
+#screen-dashboard.entering {
+  animation: dashEnter 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes dashEnter {
+  0%   { opacity: 0; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Tela de login saindo com fade geral */
+#screen-login.exit-fade {
+  animation: loginExitFull 0.5s ease forwards;
+  pointer-events: none;
+}
+@keyframes loginExitFull {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+
 #screen-login {
   position: relative;
   display: flex;

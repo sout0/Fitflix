@@ -17,16 +17,18 @@
   <!-- ===================== TELA 1: SELEÇÃO DE PERFIL (Login Netflix) ===================== -->
   <div id="screen-login" class="screen active">
     <div class="login-bg-overlay"></div>
-    <div class="login-content">
-      <div class="login-logo">
+    <div class="login-content" id="login-content">
+      <div class="login-logo" id="login-logo">
         <i class="fa-solid fa-dumbbell logo-icon"></i>
         <span class="logo-text">GYM<span class="logo-accent">TRACK</span></span>
       </div>
-      <h1 class="login-title">Quem está treinando?</h1>
-      <div class="profiles-grid">
+      <h1 class="login-title" id="login-title">Quem está treinando?</h1>
+      <div class="profiles-grid" id="profiles-grid">
         <!-- Perfis gerados via JS -->
       </div>
     </div>
+    <!-- Elemento "flying avatar" que faz o zoom cinematográfico -->
+    <div id="zoom-avatar" class="zoom-avatar" aria-hidden="true"></div>
   </div>
 
   <!-- ===================== TELA 2: PAINEL PRINCIPAL ===================== -->
