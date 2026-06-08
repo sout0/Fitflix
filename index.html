@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GymTrack — Quem está treinando?</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===================== TELA 1: SELEÇÃO DE PERFIL (Login Netflix) ===================== -->
+  <div id="screen-login" class="screen active">
+    <div class="login-bg-overlay"></div>
+    <div class="login-content">
+      <div class="login-logo">
+        <i class="fa-solid fa-dumbbell logo-icon"></i>
+        <span class="logo-text">GYM<span class="logo-accent">TRACK</span></span>
+      </div>
+      <h1 class="login-title">Quem está treinando?</h1>
+      <div class="profiles-grid">
+        <!-- Perfis gerados via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TELA 2: PAINEL PRINCIPAL ===================== -->
+  <div id="screen-dashboard" class="screen">
+    <!-- Header -->
+    <header class="dashboard-header" id="dashboard-header">
+      <div class="header-left">
+        <button class="back-btn" onclick="App.logout()">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="header-avatar-wrap" id="header-avatar-wrap" onclick="App.goToProfile()">
+          <div class="header-avatar" id="header-avatar"></div>
+          <div class="header-user-info">
+            <span class="header-greeting" id="header-greeting"></span>
+            <span class="header-username" id="header-username"></span>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="header-points-badge" id="header-points-badge">
+          <i class="fa-solid fa-dumbbell"></i>
+          <span id="header-points">0</span>
+        </div>
+        <button class="header-icon-btn" onclick="App.openSettings()" title="Configurações">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Dashboard Body -->
+    <main class="dashboard-main">
+      <!-- Seção de registro de hoje -->
+      <section class="section-card today-card">
+        <div class="section-label">
+          <i class="fa-regular fa-calendar-check"></i>
+          <span id="today-date-label">Hoje</span>
+        </div>
+        <h2 class="section-title">Registrar Treino</h2>
+        <p class="section-sub">Cada treino vale <strong>5 <i class="fa-solid fa-dumbbell accent-icon"></i></strong></p>
+        <div class="register-buttons">
+          <button class="register-btn btn-muscle" id="btn-muscle" onclick="App.registerWorkout('muscle')">
+            <div class="btn-icon-wrap"><i class="fa-solid fa-dumbbell"></i></div>
+            <div class="btn-text-wrap">
+              <span class="btn-label">Musculação</span>
+              <span class="btn-status" id="status-muscle">Disponível hoje</span>
+            </div>
+            <div class="btn-check" id="check-muscle"><i class="fa-solid fa-check"></i></div>
+          </button>
+          <button class="register-btn btn-cardio" id="btn-cardio" onclick="App.registerWorkout('cardio')">
+            <div class="btn-icon-wrap"><i class="fa-solid fa-person-running"></i></div>
+            <div class="btn-text-wrap">
+              <span class="btn-label">Cardio</span>
+              <span class="btn-status" id="status-cardio">Disponível hoje</span>
+            </div>
+            <div class="btn-check" id="check-cardio"><i class="fa-solid fa-check"></i></div>
+          </button>
+        </div>
+      </section>
+
+      <!-- Resumo semanal -->
+      <section class="section-card week-card">
+        <div class="section-label">
+          <i class="fa-solid fa-chart-bar"></i> Semana Atual
+        </div>
+        <div class="week-stats">
+          <div class="week-stat-item">
+            <span class="week-stat-num" id="week-muscle">0</span>
+            <span class="week-stat-desc"><i class="fa-solid fa-dumbbell"></i> Musculação</span>
+          </div>
+          <div class="week-stat-divider"></div>
+          <div class="week-stat-item">
+            <span class="week-stat-num" id="week-cardio">0</span>
+            <span class="week-stat-desc"><i class="fa-solid fa-person-running"></i> Cardio</span>
+          </div>
+          <div class="week-stat-divider"></div>
+          <div class="week-stat-item">
+            <span class="week-stat-num accent" id="week-points">0</span>
+            <span class="week-stat-desc"><i class="fa-solid fa-dumbbell"></i> Halteres</span>
+          </div>
+        </div>
+        <!-- Meta progress -->
+        <div class="goal-progress-wrap" id="goal-progress-wrap">
+          <div class="goal-progress-label">
+            <span>Progresso da Meta Semanal</span>
+            <span id="goal-progress-text">0 / 0 treinos</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-bar-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Streak e conquistas recentes -->
+      <section class="section-card achievements-card">
+        <div class="section-label">
+          <i class="fa-solid fa-trophy"></i> Conquistas Desbloqueadas
+        </div>
+        <div class="achievements-scroll" id="achievements-list">
+          <!-- Gerado via JS -->
+        </div>
+      </section>
+
+      <!-- Calendário do mês -->
+      <section class="section-card calendar-card">
+        <div class="section-label">
+          <i class="fa-regular fa-calendar"></i> Registro do Mês
+        </div>
+        <div class="month-calendar" id="month-calendar">
+          <!-- Gerado via JS -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===================== TELA 3: PERFIL & CONQUISTAS ===================== -->
+  <div id="screen-profile" class="screen">
+    <header class="sub-header">
+      <button class="back-btn" onclick="App.closeProfile()">
+        <i class="fa-solid fa-chevron-left"></i> Voltar
+      </button>
+      <h2>Perfil & Conquistas</h2>
+      <div></div>
+    </header>
+    <main class="profile-main">
+      <div class="profile-hero">
+        <div class="profile-avatar-big" id="profile-avatar-big"></div>
+        <h2 id="profile-name-big"></h2>
+        <div class="profile-meta-summary" id="profile-meta-summary"></div>
+      </div>
+
+      <!-- Pontos totais -->
+      <div class="section-card points-total-card">
+        <div class="points-total-row">
+          <div class="points-total-item">
+            <i class="fa-solid fa-dumbbell accent-icon big"></i>
+            <span class="points-total-num" id="profile-total-points">0</span>
+            <span class="points-total-label">Halteres no mês</span>
+          </div>
+          <div class="points-total-item">
+            <i class="fa-solid fa-fire accent-icon big"></i>
+            <span class="points-total-num" id="profile-total-workouts">0</span>
+            <span class="points-total-label">Treinos no mês</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conquistas por categoria -->
+      <div class="achievements-categories">
+        <div class="section-card">
+          <div class="section-label"><i class="fa-solid fa-star"></i> Geral</div>
+          <div class="achievements-grid" id="ach-geral"></div>
+        </div>
+        <div class="section-card">
+          <div class="section-label"><i class="fa-solid fa-dumbbell"></i> Musculação</div>
+          <div class="achievements-grid" id="ach-muscle"></div>
+        </div>
+        <div class="section-card">
+          <div class="section-label"><i class="fa-solid fa-person-running"></i> Cardio</div>
+          <div class="achievements-grid" id="ach-cardio"></div>
+        </div>
+      </div>
+
+      <!-- Botão Fechamento do Mês Anterior -->
+      <button class="btn-month-close" onclick="App.openMonthClose()">
+        <i class="fa-solid fa-chart-line"></i>
+        Fechamento do Mês Anterior
+      </button>
+    </main>
+  </div>
+
+  <!-- ===================== TELA 4: CONFIGURAÇÕES ===================== -->
+  <div id="screen-settings" class="screen">
+    <header class="sub-header">
+      <button class="back-btn" onclick="App.closeSettings()">
+        <i class="fa-solid fa-chevron-left"></i> Voltar
+      </button>
+      <h2>Configurações</h2>
+      <div></div>
+    </header>
+    <main class="settings-main">
+
+      <!-- Submenu: Meta -->
+      <div class="settings-group">
+        <div class="settings-group-title" onclick="App.toggleSettingsGroup('goal')">
+          <div><i class="fa-solid fa-bullseye"></i> Meta Semanal</div>
+          <i class="fa-solid fa-chevron-down chevron-icon" id="chevron-goal"></i>
+        </div>
+        <div class="settings-group-body" id="group-goal">
+          <p class="settings-desc">Define quantos treinos de cada tipo você quer fazer por semana.</p>
+          <div class="settings-row">
+            <label><i class="fa-solid fa-dumbbell"></i> Musculação / semana</label>
+            <div class="counter-wrap">
+              <button onclick="App.changeGoal('muscle', -1)">-</button>
+              <span id="goal-muscle-val">3</span>
+              <button onclick="App.changeGoal('muscle', 1)">+</button>
+            </div>
+          </div>
+          <div class="settings-row">
+            <label><i class="fa-solid fa-person-running"></i> Cardio / semana</label>
+            <div class="counter-wrap">
+              <button onclick="App.changeGoal('cardio', -1)">-</button>
+              <span id="goal-cardio-val">2</span>
+              <button onclick="App.changeGoal('cardio', 1)">+</button>
+            </div>
+          </div>
+          <button class="btn-save-goal" onclick="App.saveGoal()">
+            <i class="fa-solid fa-check"></i> Salvar Meta
+          </button>
+        </div>
+      </div>
+
+      <!-- Submenu: Cor do perfil -->
+      <div class="settings-group">
+        <div class="settings-group-title" onclick="App.toggleSettingsGroup('color')">
+          <div><i class="fa-solid fa-palette"></i> Cor do Perfil</div>
+          <i class="fa-solid fa-chevron-down chevron-icon" id="chevron-color"></i>
+        </div>
+        <div class="settings-group-body" id="group-color">
+          <p class="settings-desc">Escolha a cor de destaque do seu perfil.</p>
+          <div class="color-picker-grid" id="color-picker-grid">
+            <!-- Gerado via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Submenu: Geral -->
+      <div class="settings-group">
+        <div class="settings-group-title" onclick="App.toggleSettingsGroup('general')">
+          <div><i class="fa-solid fa-sliders"></i> Configurações Gerais</div>
+          <i class="fa-solid fa-chevron-down chevron-icon" id="chevron-general"></i>
+        </div>
+        <div class="settings-group-body" id="group-general">
+          <p class="settings-desc">Opções gerais da conta.</p>
+          <div class="settings-info-row">
+            <span><i class="fa-solid fa-info-circle"></i> Os pontos são resetados mensalmente.</span>
+          </div>
+          <div class="settings-info-row">
+            <span><i class="fa-solid fa-info-circle"></i> O máximo por dia é 1 musculação + 1 cardio.</span>
+          </div>
+          <button class="btn-danger" onclick="App.confirmResetData()">
+            <i class="fa-solid fa-trash"></i> Resetar meus dados
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ===================== MODAL: FECHAMENTO DO MÊS ===================== -->
+  <div id="modal-month-close" class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close" onclick="App.closeMonthClose()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <h3 class="modal-title"><i class="fa-solid fa-chart-line"></i> Fechamento do Mês Anterior</h3>
+      <div id="modal-month-content" class="modal-content">
+        <!-- Gerado via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TOAST NOTIFICATION ===================== -->
+  <div id="toast" class="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
