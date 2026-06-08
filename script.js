@@ -207,25 +207,39 @@ const App = {
     const color = this.userData.color || user.color;
     this.applyAccentColor(color);
 
-    // Pré-renderiza o dashboard (invisível ainda)
+    // Pré-renderiza o dashboard
     this.renderDashboard();
 
     const loginScreen = document.getElementById('screen-login');
     const dashScreen  = document.getElementById('screen-dashboard');
 
-    // Fade-out da tela de login
-    loginScreen.classList.add('fading-out');
+    // Fase 1: fade-out da tela de login (350ms)
+    loginScreen.style.transition = 'opacity 0.35s ease';
+    loginScreen.style.opacity = '0';
+    loginScreen.style.pointerEvents = 'none';
 
     setTimeout(() => {
-      loginScreen.classList.remove('active', 'fading-out');
-      dashScreen.scrollTop = 0;
-      dashScreen.classList.add('active', 'entering');
+      // Fase 2: esconde login, mostra dashboard com fade-in
+      loginScreen.style.transition = '';
+      loginScreen.style.opacity = '';
+      loginScreen.style.pointerEvents = '';
+      loginScreen.classList.remove('active');
 
-      dashScreen.addEventListener('animationend', () => {
-        dashScreen.classList.remove('entering');
+      dashScreen.style.opacity = '0';
+      dashScreen.scrollTop = 0;
+      dashScreen.classList.add('active');
+
+      // Força reflow antes de iniciar fade-in
+      void dashScreen.offsetHeight;
+
+      dashScreen.style.transition = 'opacity 0.4s ease';
+      dashScreen.style.opacity = '1';
+
+      setTimeout(() => {
+        dashScreen.style.transition = '';
         this._transitioning = false;
-      }, { once: true });
-    }, 350);
+      }, 420);
+    }, 360);
   },
 
   /** Aplica cor de destaque via CSS variable */
@@ -523,21 +537,35 @@ const App = {
     const dashScreen  = document.getElementById('screen-dashboard');
     const loginScreen = document.getElementById('screen-login');
 
-    dashScreen.classList.add('fading-out');
+    // Fade-out do dashboard
+    dashScreen.style.transition = 'opacity 0.35s ease';
+    dashScreen.style.opacity = '0';
+    dashScreen.style.pointerEvents = 'none';
 
     setTimeout(() => {
-      dashScreen.classList.remove('active', 'fading-out');
-      this._resetLoginScreen();
-      loginScreen.classList.add('active', 'entering');
-      loginScreen.scrollTop = 0;
-      loginScreen.addEventListener('animationend', () => {
-        loginScreen.classList.remove('entering');
-      }, { once: true });
+      dashScreen.style.transition = '';
+      dashScreen.style.opacity = '';
+      dashScreen.style.pointerEvents = '';
+      dashScreen.classList.remove('active');
 
+      this._resetLoginScreen();
       this.currentUser = null;
       this.userData = null;
       this.applyAccentColor('#E50914');
-    }, 350);
+
+      loginScreen.style.opacity = '0';
+      loginScreen.scrollTop = 0;
+      loginScreen.classList.add('active');
+
+      void loginScreen.offsetHeight;
+
+      loginScreen.style.transition = 'opacity 0.4s ease';
+      loginScreen.style.opacity = '1';
+
+      setTimeout(() => {
+        loginScreen.style.transition = '';
+      }, 420);
+    }, 360);
   },
 
   /** Restaura todos os elementos do login ao estado original */
