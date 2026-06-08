@@ -218,6 +218,7 @@ const App = {
 
     setTimeout(() => {
       loginScreen.classList.remove('active', 'fading-out');
+      dashScreen.scrollTop = 0;
       dashScreen.classList.add('active', 'entering');
 
       dashScreen.addEventListener('animationend', () => {
@@ -522,25 +523,21 @@ const App = {
     const dashScreen  = document.getElementById('screen-dashboard');
     const loginScreen = document.getElementById('screen-login');
 
-    // Fade out do dashboard
-    dashScreen.style.transition = 'opacity 0.3s ease';
-    dashScreen.style.opacity = '0';
+    dashScreen.classList.add('fading-out');
 
     setTimeout(() => {
-      dashScreen.style.transition = '';
-      dashScreen.style.opacity = '';
-      dashScreen.classList.remove('active');
-
-      // Restaura tela de login
+      dashScreen.classList.remove('active', 'fading-out');
       this._resetLoginScreen();
-      loginScreen.classList.add('active');
-      loginScreen.style.animation = 'fadeIn 0.35s ease';
+      loginScreen.classList.add('active', 'entering');
+      loginScreen.scrollTop = 0;
+      loginScreen.addEventListener('animationend', () => {
+        loginScreen.classList.remove('entering');
+      }, { once: true });
 
       this.currentUser = null;
       this.userData = null;
       this.applyAccentColor('#E50914');
-      window.scrollTo(0, 0);
-    }, 300);
+    }, 350);
   },
 
   /** Restaura todos os elementos do login ao estado original */
@@ -743,23 +740,21 @@ const App = {
 
   // ---- NAVEGAÇÃO ENTRE TELAS (sub-telas internas) ----
   showScreen(name) {
-    // login e dashboard têm transições próprias; este método serve para as sub-telas
-    const targets = ['profile', 'settings'];
-    document.querySelectorAll('.screen').forEach(s => {
-      const id = s.id.replace('screen-', '');
-      if (targets.includes(id)) s.classList.remove('active');
-    });
+    const all = document.querySelectorAll('.screen');
 
     if (name === 'dashboard') {
-      // Voltar ao dashboard a partir de sub-telas
-      document.getElementById('screen-profile')?.classList.remove('active');
-      document.getElementById('screen-settings')?.classList.remove('active');
-      document.getElementById('screen-dashboard').classList.add('active');
+      all.forEach(s => {
+        if (s.id !== 'screen-dashboard') s.classList.remove('active');
+      });
+      const dash = document.getElementById('screen-dashboard');
+      dash.classList.add('active');
+      dash.scrollTop = 0;
     } else if (name === 'profile' || name === 'settings') {
       document.getElementById('screen-dashboard').classList.remove('active');
-      document.getElementById(`screen-${name}`).classList.add('active');
+      const target = document.getElementById(`screen-${name}`);
+      target.classList.add('active');
+      target.scrollTop = 0;
     }
-    window.scrollTo(0, 0);
   },
 
   // ---- TOAST ----

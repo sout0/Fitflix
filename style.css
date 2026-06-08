@@ -52,11 +52,20 @@ body {
 
 /* ---- SCREENS ---- */
 .screen {
-  display: none;
-  min-height: 100vh;
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  z-index: 0;
 }
 .screen.active {
-  display: block;
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  z-index: 1;
 }
 .screen.entering {
   animation: fadeIn 0.4s ease forwards;
@@ -81,7 +90,6 @@ body {
 
 
 #screen-login {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -91,7 +99,9 @@ body {
     radial-gradient(ellipse at 80% 20%, rgba(100,100,100,0.08) 0%, transparent 50%),
     var(--bg-primary);
 }
-#screen-login.active { display: flex; }
+#screen-login.active {
+  display: flex;
+}
 
 /* Background pattern */
 .login-bg-overlay {
