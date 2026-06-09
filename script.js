@@ -9,7 +9,7 @@
  *   nome          text NOT NULL,
  *   cor_preferida text DEFAULT '#E50914',
  *   meta_muscle   int  DEFAULT 3,
- *   meta_cardio   int  DEFAULT 2
+ *   meta_cardio   int  DEFAULT 3
  * )
  *
  * treinos (
