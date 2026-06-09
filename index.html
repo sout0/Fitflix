@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FitFlix — Quem está treinando?</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-  <!-- ===================== TELA 1: SELEÇÃO DE PERFIL (Login Netflix) ===================== -->
+  <!-- TELA 1: SELEÇÃO DE PERFIL -->
   <div id="screen-login" class="screen active">
     <div class="login-bg-overlay"></div>
     <div class="login-content" id="login-content">
@@ -23,21 +23,18 @@
         <span class="logo-text">FIT<span class="logo-accent">FLIX</span></span>
       </div>
       <h1 class="login-title" id="login-title">Quem está treinando?</h1>
-      <div class="profiles-grid" id="profiles-grid">
-        <!-- Perfis gerados via JS -->
-      </div>
+      <div class="profiles-grid" id="profiles-grid"></div>
     </div>
   </div>
 
-  <!-- ===================== TELA 2: PAINEL PRINCIPAL ===================== -->
+  <!-- TELA 2: PAINEL PRINCIPAL -->
   <div id="screen-dashboard" class="screen">
-    <!-- Header -->
-    <header class="dashboard-header" id="dashboard-header">
+    <header class="dashboard-header">
       <div class="header-left">
         <button class="back-btn" onclick="App.logout()">
           <i class="fa-solid fa-chevron-left"></i>
         </button>
-        <div class="header-avatar-wrap" id="header-avatar-wrap" onclick="App.goToProfile()">
+        <div class="header-avatar-wrap" onclick="App.goToProfile()">
           <div class="header-avatar" id="header-avatar"></div>
           <div class="header-user-info">
             <span class="header-greeting" id="header-greeting"></span>
@@ -55,10 +52,7 @@
         </button>
       </div>
     </header>
-
-    <!-- Dashboard Body -->
     <main class="dashboard-main">
-      <!-- Seção de registro de hoje -->
       <section class="section-card today-card">
         <div class="section-label">
           <i class="fa-regular fa-calendar-check"></i>
@@ -67,7 +61,7 @@
         <h2 class="section-title">Registrar Treino</h2>
         <p class="section-sub">Cada treino vale <strong>5 <i class="fa-solid fa-dumbbell accent-icon"></i></strong></p>
         <div class="register-buttons">
-          <button class="register-btn btn-muscle" id="btn-muscle" onclick="App.registerWorkout('muscle')">
+          <button class="register-btn btn-muscle" id="btn-muscle" onclick="App.registerWorkout('musculacao')">
             <div class="btn-icon-wrap"><i class="fa-solid fa-dumbbell"></i></div>
             <div class="btn-text-wrap">
               <span class="btn-label">Musculação</span>
@@ -85,12 +79,8 @@
           </button>
         </div>
       </section>
-
-      <!-- Resumo semanal -->
       <section class="section-card week-card">
-        <div class="section-label">
-          <i class="fa-solid fa-chart-bar"></i> Semana Atual
-        </div>
+        <div class="section-label"><i class="fa-solid fa-chart-bar"></i> Semana Atual</div>
         <div class="week-stats">
           <div class="week-stat-item">
             <span class="week-stat-num" id="week-muscle">0</span>
@@ -107,8 +97,7 @@
             <span class="week-stat-desc"><i class="fa-solid fa-dumbbell"></i> Halteres</span>
           </div>
         </div>
-        <!-- Meta progress -->
-        <div class="goal-progress-wrap" id="goal-progress-wrap">
+        <div class="goal-progress-wrap">
           <div class="goal-progress-label">
             <span>Progresso da Meta Semanal</span>
             <span id="goal-progress-text">0 / 0 treinos</span>
@@ -118,30 +107,18 @@
           </div>
         </div>
       </section>
-
-      <!-- Streak e conquistas recentes -->
       <section class="section-card achievements-card">
-        <div class="section-label">
-          <i class="fa-solid fa-trophy"></i> Conquistas Desbloqueadas
-        </div>
-        <div class="achievements-scroll" id="achievements-list">
-          <!-- Gerado via JS -->
-        </div>
+        <div class="section-label"><i class="fa-solid fa-trophy"></i> Conquistas Desbloqueadas</div>
+        <div class="achievements-scroll" id="achievements-list"></div>
       </section>
-
-      <!-- Calendário do mês -->
       <section class="section-card calendar-card">
-        <div class="section-label">
-          <i class="fa-regular fa-calendar"></i> Registro do Mês
-        </div>
-        <div class="month-calendar" id="month-calendar">
-          <!-- Gerado via JS -->
-        </div>
+        <div class="section-label"><i class="fa-regular fa-calendar"></i> Registro do Mês</div>
+        <div class="month-calendar" id="month-calendar"></div>
       </section>
     </main>
   </div>
 
-  <!-- ===================== TELA 3: PERFIL & CONQUISTAS ===================== -->
+  <!-- TELA 3: PERFIL & CONQUISTAS -->
   <div id="screen-profile" class="screen">
     <header class="sub-header">
       <button class="back-btn" onclick="App.closeProfile()">
@@ -156,8 +133,6 @@
         <h2 id="profile-name-big"></h2>
         <div class="profile-meta-summary" id="profile-meta-summary"></div>
       </div>
-
-      <!-- Pontos totais -->
       <div class="section-card points-total-card">
         <div class="points-total-row">
           <div class="points-total-item">
@@ -172,8 +147,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Conquistas por categoria -->
       <div class="achievements-categories">
         <div class="section-card">
           <div class="section-label"><i class="fa-solid fa-star"></i> Geral</div>
@@ -188,16 +161,13 @@
           <div class="achievements-grid" id="ach-cardio"></div>
         </div>
       </div>
-
-      <!-- Botão Fechamento do Mês Anterior -->
       <button class="btn-month-close" onclick="App.openMonthClose()">
-        <i class="fa-solid fa-chart-line"></i>
-        Fechamento do Mês Anterior
+        <i class="fa-solid fa-chart-line"></i> Fechamento do Mês Anterior
       </button>
     </main>
   </div>
 
-  <!-- ===================== TELA 4: CONFIGURAÇÕES ===================== -->
+  <!-- TELA 4: CONFIGURAÇÕES -->
   <div id="screen-settings" class="screen">
     <header class="sub-header">
       <button class="back-btn" onclick="App.closeSettings()">
@@ -207,8 +177,6 @@
       <div></div>
     </header>
     <main class="settings-main">
-
-      <!-- Submenu: Meta -->
       <div class="settings-group">
         <div class="settings-group-title" onclick="App.toggleSettingsGroup('goal')">
           <div><i class="fa-solid fa-bullseye"></i> Meta Semanal</div>
@@ -237,8 +205,6 @@
           </button>
         </div>
       </div>
-
-      <!-- Submenu: Cor do perfil -->
       <div class="settings-group">
         <div class="settings-group-title" onclick="App.toggleSettingsGroup('color')">
           <div><i class="fa-solid fa-palette"></i> Cor do Perfil</div>
@@ -246,13 +212,9 @@
         </div>
         <div class="settings-group-body" id="group-color">
           <p class="settings-desc">Escolha a cor de destaque do seu perfil.</p>
-          <div class="color-picker-grid" id="color-picker-grid">
-            <!-- Gerado via JS -->
-          </div>
+          <div class="color-picker-grid" id="color-picker-grid"></div>
         </div>
       </div>
-
-      <!-- Submenu: Geral -->
       <div class="settings-group">
         <div class="settings-group-title" onclick="App.toggleSettingsGroup('general')">
           <div><i class="fa-solid fa-sliders"></i> Configurações Gerais</div>
@@ -261,7 +223,7 @@
         <div class="settings-group-body" id="group-general">
           <p class="settings-desc">Opções gerais da conta.</p>
           <div class="settings-info-row">
-            <span><i class="fa-solid fa-info-circle"></i> Os pontos são resetados mensalmente.</span>
+            <span><i class="fa-solid fa-info-circle"></i> Os pontos são calculados com base nos treinos registrados.</span>
           </div>
           <div class="settings-info-row">
             <span><i class="fa-solid fa-info-circle"></i> O máximo por dia é 1 musculação + 1 cardio.</span>
@@ -271,26 +233,21 @@
           </button>
         </div>
       </div>
-
     </main>
   </div>
 
-  <!-- ===================== MODAL: FECHAMENTO DO MÊS ===================== -->
+  <!-- MODAL: FECHAMENTO DO MÊS -->
   <div id="modal-month-close" class="modal-overlay">
     <div class="modal-box">
       <button class="modal-close" onclick="App.closeMonthClose()">
         <i class="fa-solid fa-xmark"></i>
       </button>
       <h3 class="modal-title"><i class="fa-solid fa-chart-line"></i> Fechamento do Mês Anterior</h3>
-      <div id="modal-month-content" class="modal-content">
-        <!-- Gerado via JS -->
-      </div>
+      <div id="modal-month-content" class="modal-content"></div>
     </div>
   </div>
 
-  <!-- ===================== TOAST NOTIFICATION ===================== -->
   <div id="toast" class="toast"></div>
-
   <script src="script.js"></script>
 </body>
 </html>
